@@ -159,7 +159,7 @@ const Navbar = () => {
                   >
                     Profile
                   </Link>
-                  {user.role === 'admin' && (
+                  {(user.role === 'admin' || user.role === 'manager' || user.role === 'warehouse_manager' || user.role === 'store_manager') && (
                     <>
                       <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"><ChartBarIcon className="h-4 w-4 mr-2" />Dashboard</Link>
                       <Link to="/admin/products" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"><Cog6ToothIcon className="h-4 w-4 mr-2" />Manage Products</Link>
@@ -268,7 +268,7 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                {user.role === 'admin' && (
+                {(user.role === 'admin' || user.role === 'manager' || user.role === 'warehouse_manager' || user.role === 'store_manager') && (
                   <>
                     <Link to="/admin" className="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md text-base font-medium flex items-center" onClick={() => setIsMobileMenuOpen(false)}><ChartBarIcon className="h-5 w-5 mr-2" />Dashboard</Link>
                     <Link to="/admin/products" className="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md text-base font-medium flex items-center" onClick={() => setIsMobileMenuOpen(false)}><Cog6ToothIcon className="h-5 w-5 mr-2" />Manage Products</Link>
