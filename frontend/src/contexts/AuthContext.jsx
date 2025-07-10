@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   // Configure axios defaults
   let apiBase = import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com';
-  if (apiBase.endsWith('/api')) apiBase = apiBase.slice(0, -4);
+  if (!apiBase.endsWith('/api')) apiBase += '/api';
   axios.defaults.baseURL = apiBase;
   axios.defaults.withCredentials = true;
 
