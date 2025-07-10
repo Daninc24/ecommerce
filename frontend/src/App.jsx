@@ -1,3 +1,4 @@
+// Force Vercel redeploy - API URL fixes applied
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
