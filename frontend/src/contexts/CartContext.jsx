@@ -29,7 +29,7 @@ export const CartProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    axios.get(import.meta.env.VITE_API_URL + '/payment/currency/rates')
+    axios.get('/api/payment/currency/rates')
       .then(res => setRates(res.data.rates))
       .catch(() => setRates({ USD: 1 }));
   }, []);

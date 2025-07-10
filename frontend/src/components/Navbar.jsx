@@ -36,7 +36,7 @@ const Navbar = () => {
   }, [user]);
 
   useEffect(() => {
-    axios.get(import.meta.env.VITE_API_URL + '/payment/currency/list')
+    axios.get('/api/payment/currency/list')
       .then(res => setCurrencies(res.data.currencies))
       .catch(() => setCurrencies(['USD']));
   }, []);
