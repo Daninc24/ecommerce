@@ -48,7 +48,9 @@ const io = new Server(server, {
       'http://localhost:5174',
       'https://myshoppingcenters-8knn.vercel.app',
       'https://myshoppingcenters.vercel.app',
-      'https://myshoppingcenter.vercel.app'
+      'https://myshoppingcenter.vercel.app',
+      'https://ecommerceweb-gilt.vercel.app',
+      'https://ecommerceweb.vercel.app'
     ],
     credentials: true,
   },
@@ -118,7 +120,9 @@ app.use(cors({
     'http://localhost:5174',
     'https://myshoppingcenters-8knn.vercel.app',
     'https://myshoppingcenters.vercel.app',
-    'https://myshoppingcenter.vercel.app'
+    'https://myshoppingcenter.vercel.app',
+    'https://ecommerceweb-gilt.vercel.app',
+    'https://ecommerceweb.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -150,7 +154,9 @@ app.get('/uploads/:filename', (req, res) => {
     'http://localhost:5174',
     'https://myshoppingcenters-8knn.vercel.app',
     'https://myshoppingcenters.vercel.app',
-    'https://myshoppingcenter.vercel.app'
+    'https://myshoppingcenter.vercel.app',
+    'https://ecommerceweb-gilt.vercel.app',
+    'https://ecommerceweb.vercel.app'
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
