@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { PencilIcon, TrashIcon, PlusIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 const AdminProducts = () => {
   const { isManagerOrAdmin } = useAuth();
+  const { error } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

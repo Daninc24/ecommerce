@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
     isShopkeeper: user?.role === 'shopkeeper',
     isStoreManager: user?.role === 'store_manager',
     isWarehouseManager: user?.role === 'warehouse_manager',
-    isManagerOrAdmin: user?.role === 'admin' || user?.role === 'manager' || user?.role === 'warehouse_manager',
+    isManagerOrAdmin: user?.role === 'admin' || user?.role === 'manager' || user?.role === 'warehouse_manager' || user?.role === 'store_manager',
     isShopkeeperOrAdmin: user?.role === 'shopkeeper' || user?.role === 'admin',
     loginWithGoogle
   };
