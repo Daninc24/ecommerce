@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   // Configure axios defaults
   let apiBase = import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com';
-  if (!apiBase.endsWith('/api')) apiBase += '/api';
-  axios.defaults.baseURL = apiBase;
+  apiBase = apiBase.replace(/\/+$/, '').replace(/\/api$/, '');
+  axios.defaults.baseURL = apiBase + '/api';
   axios.defaults.withCredentials = true;
 
   // Check if user is logged in on mount
@@ -77,7 +77,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = () => {
-    window.location.href = (import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com/api') + '/auth/google';
+    let apiBase = import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com';
+    apiBase = apiBase.replace(/\/+$/, '').replace(/\/api$/, '');
+    window.location.href = apiBase + '/api/auth/google';
   };
 
   const value = {
