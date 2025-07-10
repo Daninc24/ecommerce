@@ -26,7 +26,7 @@ const Profile = () => {
   useEffect(() => {
     if (!user) return;
     if (socketRef.current) return;
-    const socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://myshoppingcenters.onrender.com', {
+    const socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://ecommerce-do0x.onrender.com', {
       withCredentials: true,
       transports: ['websocket'],
     });

@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Configure axios defaults
-  let apiBase = import.meta.env.VITE_API_URL || 'https://myshoppingcenters.onrender.com/api';
+  let apiBase = import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com/api';
   if (apiBase.endsWith('/api')) apiBase = apiBase.slice(0, -4);
   axios.defaults.baseURL = apiBase + '/api';
   axios.defaults.withCredentials = true;
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = () => {
-    window.location.href = (import.meta.env.VITE_API_URL || 'https://myshoppingcenters.onrender.com/api') + '/auth/google';
+    window.location.href = (import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com/api') + '/auth/google';
   };
 
   const value = {

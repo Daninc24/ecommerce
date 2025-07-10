@@ -21,7 +21,7 @@ import { Helmet } from 'react-helmet';
 const getAdvertImageUrl = (image) => {
   if (!image) return '';
   if (image.startsWith('/uploads')) {
-    return `https://myshoppingcenters.onrender.com${image}`;
+    return `https://ecommerce-do0x.onrender.com${image}`;
   }
   return image;
 };
@@ -165,7 +165,10 @@ const Home = () => {
     // ]);
     // Real-time events
     if (!socketRef.current) {
-      socketRef.current = io('/', { transports: ['websocket'] });
+      socketRef.current = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://ecommerce-do0x.onrender.com', { 
+        transports: ['websocket'],
+        withCredentials: true
+      });
       socketRef.current.on('event_created', (event) => {
         fetchEvents();
         success(`New event: ${event.title}`);
