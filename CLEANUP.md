@@ -7,7 +7,12 @@ This document outlines the cleanup process performed on the ecommerce project an
 ### 1. Removed Redundant Files
 - **Deleted**: `backend/src/routes/productRoutes.js` (redundant with `products.js`)
 
-### 2. Removed Debug Console.log Statements
+### 2. Removed Dangerous Cleanup Routes
+- **Removed**: `/api/cleanup-products` route that could delete products
+- **Removed**: `/api/emergency-cleanup` route that could delete products
+- **Kept**: Safe image cleanup script that only removes unused files
+
+### 3. Removed Debug Console.log Statements
 - **Backend**: Removed debug logging from:
   - `productController.js` - createProduct function
   - `auth.js` - authentication middleware
@@ -48,6 +53,8 @@ This script:
 3. Scans the uploads directory
 4. Identifies unused image files
 5. Deletes files that are no longer referenced
+
+**⚠️ Important**: The dangerous product deletion routes have been removed from server.js to prevent accidental data loss.
 
 ## Best Practices Going Forward
 
