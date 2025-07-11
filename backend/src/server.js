@@ -161,12 +161,14 @@ app.get('/uploads/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, '../uploads', filename);
   
-  // More permissive CORS for images
+  // Very permissive CORS for images
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD');
+  res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Credentials', 'false');
-  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+  res.header('Access-Control-Expose-Headers', '*');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production') {
@@ -191,12 +193,14 @@ app.get('/uploads/profiles/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, '../uploads/profiles', filename);
   
-  // More permissive CORS for images
+  // Very permissive CORS for images
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD');
+  res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Credentials', 'false');
-  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+  res.header('Access-Control-Expose-Headers', '*');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production') {
@@ -280,6 +284,75 @@ app.get('/api/test-images', (req, res) => {
       message: 'Error reading uploads directory',
       error: error.message 
     });
+  }
+});
+
+app.get('/api/list-images', (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  const uploadsDir = path.join(__dirname, '../uploads');
+  
+  try {
+    const files = fs.readdirSync(uploadsDir);
+    const imageFiles = files.filter(file => 
+      file.match(/\.(jpg|jpeg|png|gif|webp)$/i)
+    );
+    
+    res.json({ 
+      message: 'Uploads directory contents',
+      totalFiles: files.length,
+      imageFiles: imageFiles.slice(0, 20), // Show first 20 images
+      totalImages: imageFiles.length
+    });
+  } catch (error) {
+    res.json({ 
+      message: 'Error reading uploads directory',
+      error: error.message 
+    });
+  }
+});
+
+app.get('/api/cleanup-products', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const uploadsDir = path.join(__dirname, '../uploads');
+    
+    const products = await Product.find();
+    const productsToDelete = [];
+    
+    products.forEach(product => {
+      if (!product.images || product.images.length === 0) {
+        productsToDelete.push(product._id);
+        return;
+      }
+      
+      // Check if all images are missing
+      const allImagesMissing = product.images.every(imageUrl => {
+        if (!imageUrl) return true;
+        const filename = imageUrl.split('/').pop();
+        const filePath = path.join(uploadsDir, filename);
+        return !fs.existsSync(filePath);
+      });
+      
+      if (allImagesMissing) {
+        productsToDelete.push(product._id);
+      }
+    });
+    
+    if (productsToDelete.length > 0) {
+      await Product.deleteMany({ _id: { $in: productsToDelete } });
+      res.json({ 
+        message: `Cleaned up ${productsToDelete.length} products with missing images`,
+        deletedCount: productsToDelete.length,
+        deletedIds: productsToDelete
+      });
+    } else {
+      res.json({ message: 'No products with missing images found' });
+    }
+  } catch (error) {
+    console.error('Error cleaning up products:', error);
+    res.status(500).json({ message: 'Error cleaning up products', error: error.message });
   }
 });
 
