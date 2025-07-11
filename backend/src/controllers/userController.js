@@ -1,4 +1,4 @@
-console.log('LOADED userController.js');
+
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
@@ -153,7 +153,7 @@ exports.sendMessage = async (req, res) => {
     const sender = req.user._id;
     if (!receiver || !content) return res.status(400).json({ message: 'Receiver and content required' });
     const message = await Message.create({ sender, receiver, content });
-    console.log('Message saved:', message);
+
     res.status(201).json({ message: 'Message sent', data: message });
   } catch (error) {
     res.status(500).json({ message: 'Error sending message', error: error.message });
@@ -162,7 +162,6 @@ exports.sendMessage = async (req, res) => {
 
 // Get messages between two users
 exports.getMessages = async (req, res) => {
-  console.log('=== ENTERED getMessages CONTROLLER ===');
   try {
     const userId = req.user._id.toString();
     const withUser = req.query.with?.toString();
@@ -171,13 +170,7 @@ exports.getMessages = async (req, res) => {
     const requester = req.user;
     const withUserObj = await User.findById(withUser);
 
-    // Debug logging
-    console.log('getMessages: requester:', requester);
-    console.log('getMessages: withUser:', withUser);
-    console.log('getMessages: withUserObj:', withUserObj);
-
     if (!withUserObj) {
-      console.log('getMessages: withUserObj not found');
       return res.status(404).json({ message: 'User to get conversation with not found' });
     }
 
@@ -186,7 +179,6 @@ exports.getMessages = async (req, res) => {
     } else if (withUserObj.role === 'admin') {
       // User can fetch messages with admin
     } else {
-      console.log('getMessages: Forbidden - permission check failed');
       return res.status(403).json({ message: 'Forbidden' });
     }
 

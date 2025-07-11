@@ -208,7 +208,6 @@ const Home = () => {
       const response = await axios.get('/products');
       setNewArrivals((response.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4));
     } catch (err) {
-      console.log(err)
       setNewArrivals([]);
     }
   };
@@ -218,7 +217,6 @@ const Home = () => {
       const response = await axios.get('/products/best-selling');
       setBestSelling(response.data || []);
     } catch (err) {
-      console.log(err)
       setBestSelling([]);
     }
   };
@@ -228,7 +226,6 @@ const Home = () => {
       const response = await axios.get('/events?upcoming=true');
       setEvents(response.data || []);
     } catch (err) {
-      console.log(err)
       setEvents([]);
     }
   };

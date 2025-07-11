@@ -4,11 +4,6 @@ const { body, validationResult } = require('express-validator');
 
 // Generate JWT token
 const generateToken = (userId) => {
-  console.log('=== JWT TOKEN GENERATION ===');
-  console.log('JWT_SECRET set:', !!process.env.JWT_SECRET);
-  console.log('JWT_SECRET length:', process.env.JWT_SECRET?.length);
-  console.log('User ID:', userId);
-  
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not configured');
   }

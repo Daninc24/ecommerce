@@ -62,18 +62,7 @@ const getProduct = async (req, res) => {
 // Create product (admin only)
 const createProduct = async (req, res) => {
   try {
-    console.log('=== CREATE PRODUCT START ===');
-    console.log('Request body:', req.body);
-    console.log('Request files:', req.files);
-    
-    // For multipart/form-data, fields come as strings in req.body
-    const title = req.body.title;
-    const description = req.body.description;
-    const price = req.body.price;
-    const category = req.body.category;
-    const stock = req.body.stock;
-    
-    console.log('Extracted fields:', { title, description, price, category, stock });
+    const { title, description, price, category, stock } = req.body;
     
     // Validate required fields
     if (!title || !description || !price || !category || !stock) {
@@ -92,16 +81,13 @@ const createProduct = async (req, res) => {
     // Handle image uploads
     let imageUrls = [];
     if (req.files && req.files.length > 0) {
-      console.log('Processing uploaded files...');
       // Generate image URLs
       const baseUrl = process.env.NODE_ENV === 'production' 
         ? 'https://ecommerce-do0x.onrender.com'
         : `${req.protocol}://${req.get('host')}`;
       
       imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
-      console.log('Generated URLs:', imageUrls);
     }
-    console.log('Final image URLs:', imageUrls);
 
     // Validate that we have at least one image
     if (imageUrls.length === 0) {
@@ -118,22 +104,12 @@ const createProduct = async (req, res) => {
       stock: parseInt(stock)
     };
 
-    console.log('Creating product with data:', productData);
-
     const product = new Product(productData);
-
-    console.log('Product object created, saving to database...');
     await product.save();
-    console.log('Product saved successfully:', product._id);
     
     res.status(201).json(product);
-    console.log('=== CREATE PRODUCT SUCCESS ===');
   } catch (error) {
-    console.error('=== CREATE PRODUCT ERROR ===');
-    console.error('Error details:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
+    console.error('Error creating product:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };

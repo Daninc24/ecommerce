@@ -7,10 +7,7 @@ const { auth, admin } = require('../middleware/auth');
 router.get('/', auth, admin, getAllUsers);
 
 // Self or admin: Get messages (move above parameterized routes)
-router.get('/messages', auth, (req, res, next) => {
-  console.log('=== ROUTE HANDLER: /api/users/messages ===');
-  next();
-}, getMessages);
+router.get('/messages', auth, getMessages);
 
 // Self or admin: Send message (move above parameterized routes)
 router.post('/messages', auth, sendMessage);
