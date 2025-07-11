@@ -7,7 +7,8 @@ const {
   updateProduct, 
   deleteProduct, 
   getBestSellingProducts,
-  getInventoryLogs
+  getInventoryLogs,
+  cleanupMissingImages
 } = require('../controllers/productController');
 const { auth, admin } = require('../middleware/auth');
 const { uploadMultiple } = require('../middleware/upload');
@@ -60,5 +61,8 @@ router.get('/categories', async (req, res) => {
 router.post('/', debugMiddleware, uploadMultiple.array('images', 5), debugAfterMulter, createProduct);
 router.put('/:id', auth, admin, uploadMultiple.array('images', 5), updateProduct);
 router.delete('/:id', auth, admin, deleteProduct);
+
+// Cleanup route for admin
+router.post('/cleanup-missing-images', auth, admin, cleanupMissingImages);
 
 module.exports = router; 

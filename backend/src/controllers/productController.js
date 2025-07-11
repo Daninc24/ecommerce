@@ -7,19 +7,28 @@ const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
     
-    // Migrate old products that have 'image' field instead of 'images'
-    const migratedProducts = products.map(product => {
-      if (product.image && !product.images) {
-        // This is an old product with single image
-        return {
-          ...product.toObject(),
-          images: [product.image]
-        };
-      }
-      return product;
-    });
-    
-    res.json(migratedProducts);
+    // Filter out products with missing images in production
+    if (process.env.NODE_ENV === 'production') {
+      const fs = require('fs');
+      const path = require('path');
+      const uploadsDir = path.join(__dirname, '../../uploads');
+      
+      const validProducts = products.filter(product => {
+        if (!product.images || product.images.length === 0) return false;
+        
+        // Check if at least one image exists
+        return product.images.some(imageUrl => {
+          if (!imageUrl) return false;
+          const filename = imageUrl.split('/').pop();
+          const filePath = path.join(uploadsDir, filename);
+          return fs.existsSync(filePath);
+        });
+      });
+      
+      res.json(validProducts);
+    } else {
+      res.json(products);
+    }
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -226,6 +235,50 @@ const getInventoryLogs = async (req, res) => {
   }
 };
 
+// Clean up products with missing images (admin only)
+const cleanupMissingImages = async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const uploadsDir = path.join(__dirname, '../../uploads');
+    
+    const products = await Product.find();
+    const productsToDelete = [];
+    
+    products.forEach(product => {
+      if (!product.images || product.images.length === 0) {
+        productsToDelete.push(product._id);
+        return;
+      }
+      
+      // Check if all images are missing
+      const allImagesMissing = product.images.every(imageUrl => {
+        if (!imageUrl) return true;
+        const filename = imageUrl.split('/').pop();
+        const filePath = path.join(uploadsDir, filename);
+        return !fs.existsSync(filePath);
+      });
+      
+      if (allImagesMissing) {
+        productsToDelete.push(product._id);
+      }
+    });
+    
+    if (productsToDelete.length > 0) {
+      await Product.deleteMany({ _id: { $in: productsToDelete } });
+      res.json({ 
+        message: `Cleaned up ${productsToDelete.length} products with missing images`,
+        deletedCount: productsToDelete.length
+      });
+    } else {
+      res.json({ message: 'No products with missing images found' });
+    }
+  } catch (error) {
+    console.error('Error cleaning up products:', error);
+    res.status(500).json({ message: 'Error cleaning up products', error: error.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getProduct,
@@ -233,5 +286,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getBestSellingProducts,
-  getInventoryLogs
+  getInventoryLogs,
+  cleanupMissingImages
 }; 

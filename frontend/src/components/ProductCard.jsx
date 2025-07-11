@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
@@ -7,6 +7,11 @@ import { ShoppingCartIcon, EyeIcon } from '@heroicons/react/24/outline';
 const ProductCard = ({ product, small }) => {
   const { addToCart, currency, convertPrice } = useCart();
   const { success } = useToast();
+  const [imageError, setImageError] = useState(false);
+  
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -18,12 +23,23 @@ const ProductCard = ({ product, small }) => {
     <div className={`bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group ${small ? 'max-w-[180px] w-full sm:max-w-[200px] md:max-w-[220px] lg:max-w-[240px]' : ''}`} style={small ? { fontSize: '0.92rem' } : {}}>
       {/* Product Image */}
       <div className="relative overflow-hidden">
-        <img
-          src={product.images && product.images.length > 0 ? product.images[0] : '/placeholder-image.jpg'}
-          alt={product.title}
-          className={`w-full ${small ? 'h-24 sm:h-28 md:h-32 lg:h-36' : 'h-48 sm:h-56 md:h-64'} object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300`}
-          style={{ objectFit: 'cover', objectPosition: 'center', display: 'block' }}
-        />
+        {!imageError && product.images && product.images.length > 0 ? (
+          <img
+            src={product.images[0]}
+            alt={product.title}
+            className={`w-full ${small ? 'h-24 sm:h-28 md:h-32 lg:h-36' : 'h-48 sm:h-56 md:h-64'} object-cover rounded-t-lg group-hover:scale-105 transition-transform duration-300`}
+            onError={handleImageError}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <div className="text-gray-500 text-center">
+              <svg className="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              </svg>
+              <p className="text-sm">No Image</p>
+            </div>
+          </div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
         
         {/* Image Count Badge */}
