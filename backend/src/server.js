@@ -160,26 +160,13 @@ app.use('/api/testimonials', testimonialsRoutes);
 app.get('/uploads/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, '../uploads', filename);
-  const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:5174',
-    'https://myshoppingcenters-8knn.vercel.app',
-    'https://myshoppingcenters.vercel.app',
-    'https://myshoppingcenter.vercel.app',
-    'https://ecommerceweb-gilt.vercel.app',
-    'https://ecommerceweb.vercel.app',
-    'https://ecommerceweb-git-main-daniel-mailus-projects.vercel.app'
-  ];
-  const origin = req.headers.origin;
   
-  // Set CORS headers for all origins that match our allowed list
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
-  }
+  // More permissive CORS for images
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'false');
+  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production') {
@@ -203,26 +190,13 @@ app.get('/uploads/:filename', (req, res) => {
 app.get('/uploads/profiles/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, '../uploads/profiles', filename);
-  const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:5173',
-    'http://localhost:5174',
-    'https://myshoppingcenters-8knn.vercel.app',
-    'https://myshoppingcenters.vercel.app',
-    'https://myshoppingcenter.vercel.app',
-    'https://ecommerceweb-gilt.vercel.app',
-    'https://ecommerceweb.vercel.app',
-    'https://ecommerceweb-git-main-daniel-mailus-projects.vercel.app'
-  ];
-  const origin = req.headers.origin;
   
-  // Set CORS headers for all origins that match our allowed list
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
-  }
+  // More permissive CORS for images
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'false');
+  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production') {
@@ -287,6 +261,25 @@ app.get('/api/test-products', async (req, res) => {
   } catch (error) {
     console.error('Error in /api/test-products:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/test-images', (req, res) => {
+  const fs = require('fs');
+  const uploadsDir = path.join(__dirname, '../uploads');
+  
+  try {
+    const files = fs.readdirSync(uploadsDir);
+    res.json({ 
+      message: 'Uploads directory contents',
+      files: files.slice(0, 10), // Show first 10 files
+      totalFiles: files.length
+    });
+  } catch (error) {
+    res.json({ 
+      message: 'Error reading uploads directory',
+      error: error.message 
+    });
   }
 });
 
