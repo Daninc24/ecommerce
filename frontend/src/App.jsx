@@ -29,6 +29,7 @@ import AdminSalesReport from './pages/AdminSalesReport';
 import AdminInventoryLogs from './pages/AdminInventoryLogs';
 import AdminPerformanceDashboard from './pages/AdminPerformanceDashboard';
 import AdminAdverts from './pages/AdminAdverts';
+import AuthFix from './components/AuthFix';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <CartProvider>
             <ToastProvider>
               <div className="min-h-screen bg-gray-50">
+                <AuthFix />
                 <Navbar />
                 <main className="container mx-auto px-4 py-8">
                   <Routes>

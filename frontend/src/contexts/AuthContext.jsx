@@ -21,6 +21,30 @@ export const AuthProvider = ({ children }) => {
   axios.defaults.baseURL = apiBase + '/api';
   axios.defaults.withCredentials = true;
 
+  // Add response interceptor to handle 401 errors
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          console.log('401 error detected, clearing user state');
+          setUser(null);
+          // Clear cookies
+          document.cookie.split(";").forEach((c) => {
+            document.cookie = c
+              .replace(/^ +/, "")
+              .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+          });
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.response.eject(interceptor);
+    };
+  }, []);
+
   // Check if user is logged in on mount
   useEffect(() => {
     checkAuth();
@@ -31,6 +55,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get('/auth/profile');
       setUser(response.data.user);
     } catch (error) {
+      console.log('Auth check failed:', error.message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -43,6 +68,7 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       return { success: true };
     } catch (error) {
+      console.log('Login error:', error.response?.data?.message || error.message);
       return { 
         success: false, 
         error: error.response?.data?.message || 'Login failed' 
@@ -66,14 +92,18 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post('/auth/logout');
-      setUser(null);
-      return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Logout failed' 
-      };
+      console.log('Logout error:', error.message);
+    } finally {
+      setUser(null);
+      // Clear cookies
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
     }
+    return { success: true };
   };
 
   const loginWithGoogle = () => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -13,6 +13,20 @@ const Login = () => {
   const { login, loginWithGoogle, loginWithFacebook } = useAuth();
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
+
+  // Clear auth state when login page loads
+  useEffect(() => {
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    // Clear localStorage
+    localStorage.clear();
+    sessionStorage.clear();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
