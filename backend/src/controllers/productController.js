@@ -216,7 +216,29 @@ const deleteProduct = async (req, res) => {
 const getBestSellingProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ salesCount: -1 }).limit(8);
-    res.json(products);
+    
+    // Filter out products with missing images in production
+    if (process.env.NODE_ENV === 'production') {
+      const fs = require('fs');
+      const path = require('path');
+      const uploadsDir = path.join(__dirname, '../../uploads');
+      
+      const validProducts = products.filter(product => {
+        if (!product.images || product.images.length === 0) return false;
+        
+        // Check if at least one image exists
+        return product.images.some(imageUrl => {
+          if (!imageUrl) return false;
+          const filename = imageUrl.split('/').pop();
+          const filePath = path.join(uploadsDir, filename);
+          return fs.existsSync(filePath);
+        });
+      });
+      
+      res.json(validProducts);
+    } else {
+      res.json(products);
+    }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
