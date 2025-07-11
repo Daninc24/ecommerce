@@ -356,6 +356,84 @@ app.get('/api/cleanup-products', async (req, res) => {
   }
 });
 
+// Immediate cleanup of products with missing images
+app.get('/api/emergency-cleanup', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const uploadsDir = path.join(__dirname, '../uploads');
+    
+    console.log('Starting emergency cleanup...');
+    console.log('Uploads directory:', uploadsDir);
+    
+    // Check if uploads directory exists
+    if (!fs.existsSync(uploadsDir)) {
+      console.log('Uploads directory does not exist');
+      return res.json({ message: 'Uploads directory does not exist' });
+    }
+    
+    const products = await Product.find();
+    console.log(`Found ${products.length} products in database`);
+    
+    const productsToDelete = [];
+    const validProducts = [];
+    
+    products.forEach(product => {
+      if (!product.images || product.images.length === 0) {
+        productsToDelete.push(product._id);
+        console.log(`Product ${product._id} has no images - will delete`);
+        return;
+      }
+      
+      // Check if all images are missing
+      const allImagesMissing = product.images.every(imageUrl => {
+        if (!imageUrl) return true;
+        const filename = imageUrl.split('/').pop();
+        const filePath = path.join(uploadsDir, filename);
+        const exists = fs.existsSync(filePath);
+        if (!exists) {
+          console.log(`Missing file: ${filename}`);
+        }
+        return !exists;
+      });
+      
+      if (allImagesMissing) {
+        productsToDelete.push(product._id);
+        console.log(`Product ${product._id} has all missing images - will delete`);
+      } else {
+        validProducts.push(product._id);
+        console.log(`Product ${product._id} has valid images - keeping`);
+      }
+    });
+    
+    console.log(`Products to delete: ${productsToDelete.length}`);
+    console.log(`Valid products: ${validProducts.length}`);
+    
+    if (productsToDelete.length > 0) {
+      const result = await Product.deleteMany({ _id: { $in: productsToDelete } });
+      console.log(`Deleted ${result.deletedCount} products`);
+      
+      res.json({ 
+        message: `Emergency cleanup completed`,
+        deletedCount: result.deletedCount,
+        validProductsCount: validProducts.length,
+        deletedIds: productsToDelete
+      });
+    } else {
+      res.json({ 
+        message: 'No products with missing images found',
+        validProductsCount: validProducts.length
+      });
+    }
+  } catch (error) {
+    console.error('Error in emergency cleanup:', error);
+    res.status(500).json({ 
+      message: 'Error during emergency cleanup', 
+      error: error.message 
+    });
+  }
+});
+
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
