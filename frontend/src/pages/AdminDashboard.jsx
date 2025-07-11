@@ -53,7 +53,7 @@ const AdminDashboard = () => {
   const fetchAnalytics = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`/analytics?timeRange=${timeRange}`);
+      const res = await axios.get(`/api/analytics?timeRange=${timeRange}`);
       const monthlyRevenue = (res.data.salesByMonth || []).map(item => ({
         month: item._id,
         revenue: item.total || 0
@@ -78,7 +78,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/users');
+      const res = await axios.get('/api/users');
       setUsers(res.data.users);
     } catch (error) {
       error('Error fetching users');
@@ -527,7 +527,7 @@ const AdminDashboard = () => {
                             onChange={async (e) => {
                               const newRole = e.target.value;
                               try {
-                                await axios.put(`/users/${user._id}/role`, { role: newRole });
+                                await axios.put(`/api/users/${user._id}/role`, { role: newRole });
                                 setUsers(users.map(u => u._id === user._id ? { ...u, role: newRole } : u));
                                 success('Role updated');
                               } catch (error) {
@@ -548,7 +548,7 @@ const AdminDashboard = () => {
                             onClick={async () => {
                               if (window.confirm('Are you sure you want to delete this user?')) {
                                 try {
-                                  await axios.delete(`/users/${user._id}`);
+                                  await axios.delete(`/api/users/${user._id}`);
                                   setUsers(users.filter(u => u._id !== user._id));
                                   success('User deleted');
                                 } catch (error) {

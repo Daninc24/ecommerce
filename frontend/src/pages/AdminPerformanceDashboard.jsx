@@ -20,7 +20,7 @@ const AdminPerformanceDashboard = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('/pos/performance-dashboard', {
+      const res = await axios.get('/api/pos/performance-dashboard', {
         params: { startDate, endDate }
       });
       setData(res.data);

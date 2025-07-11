@@ -40,7 +40,7 @@ const PaymentForm = ({ onPaymentSuccess, onPaymentError }) => {
     try {
       setLoading(true);
       const localAmount = cart.reduce((sum, item) => sum + convertPrice(item.product?.price * item.quantity), 0);
-      const response = await axios.post('/payment/create-payment-intent', {
+      const response = await axios.post('/api/payment/create-payment-intent', {
         items: cart,
         currency,
       });
@@ -81,7 +81,7 @@ const PaymentForm = ({ onPaymentSuccess, onPaymentError }) => {
         return;
       }
       if (paymentIntent.status === 'succeeded') {
-        const response = await axios.post('/payment/confirm-payment', {
+        const response = await axios.post('/api/payment/confirm-payment', {
           paymentIntentId: paymentIntent.id,
           items: cart,
           shippingAddress: address
@@ -101,7 +101,7 @@ const PaymentForm = ({ onPaymentSuccess, onPaymentError }) => {
   const handlePayPalApprove = async (data) => {
     setPaypalLoading(true);
     try {
-      const captureRes = await axios.post('/payment/paypal/capture-order', {
+      const captureRes = await axios.post('/api/payment/paypal/capture-order', {
         orderID: data.orderID,
       });
 
@@ -128,7 +128,7 @@ const PaymentForm = ({ onPaymentSuccess, onPaymentError }) => {
   const handleMpesaPayment = async () => {
     setMpesaLoading(true);
     try {
-      const res = await axios.post('/payment/mpesa/initiate', {
+      const res = await axios.post('/api/payment/mpesa/initiate', {
         phone: mpesaPhone,
         amount: totalAmount,
       });
@@ -235,7 +235,7 @@ const PaymentForm = ({ onPaymentSuccess, onPaymentError }) => {
               style={{ layout: 'vertical' }}
               createOrder={async (data, actions) => {
                 const usdTotal = cart.reduce((sum, item) => sum + (item.product?.price * item.quantity), 0);
-                const res = await axios.post('/payment/paypal/create-order', {
+                const res = await axios.post('/api/payment/paypal/create-order', {
                   totalAmount: usdTotal,
                   currency,
                 });

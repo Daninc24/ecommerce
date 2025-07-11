@@ -37,7 +37,7 @@ export const CartProvider = ({ children }) => {
   const loadCart = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/cart');
+      const response = await axios.get('/api/cart');
       setCart(response.data.cart || []);
     } catch (error) {
       setCart([]);
@@ -65,7 +65,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // For authenticated users, save to server
-      const response = await axios.post('/cart', { productId, quantity });
+      const response = await axios.post('/api/cart', { productId, quantity });
       setCart(response.data.cart);
       return { success: true };
     } catch (error) {
@@ -88,7 +88,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // For authenticated users, remove from server
-      const response = await axios.delete(`/cart/${productId}`);
+      const response = await axios.delete(`/api/cart/${productId}`);
       setCart(response.data.cart);
       return { success: true };
     } catch (error) {
@@ -114,7 +114,7 @@ export const CartProvider = ({ children }) => {
       }
 
       // For authenticated users, update on server
-      const response = await axios.put(`/cart/${productId}`, { quantity });
+      const response = await axios.put(`/api/cart/${productId}`, { quantity });
       setCart(response.data.cart);
       return { success: true };
     } catch (error) {
@@ -133,7 +133,7 @@ export const CartProvider = ({ children }) => {
         return { success: true };
       }
 
-      await axios.delete('/cart');
+      await axios.delete('/api/cart');
       setCart([]);
       return { success: true };
     } catch (error) {

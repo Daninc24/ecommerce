@@ -193,7 +193,7 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/products');
+      const response = await axios.get('/api/products');
       setProducts(response.data || []);
     } catch (err) {
       err('Error fetching products');
@@ -205,7 +205,7 @@ const Home = () => {
 
   const fetchNewArrivals = async () => {
     try {
-      const response = await axios.get('/products');
+      const response = await axios.get('/api/products');
       setNewArrivals((response.data || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4));
     } catch (err) {
       console.log(err)
@@ -215,7 +215,7 @@ const Home = () => {
 
   const fetchBestSelling = async () => {
     try {
-      const response = await axios.get('/products/best-selling');
+      const response = await axios.get('/api/products/best-selling');
       setBestSelling(response.data || []);
     } catch (err) {
       console.log(err)
@@ -225,7 +225,7 @@ const Home = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('/events?upcoming=true');
+      const response = await axios.get('/api/events?upcoming=true');
       setEvents(response.data || []);
     } catch (err) {
       console.log(err)
@@ -235,7 +235,7 @@ const Home = () => {
 
   const fetchAdverts = async () => {
     try {
-      const res = await axios.get('/adverts/active');
+      const res = await axios.get('/api/adverts/active');
       setAdverts(res.data.adverts || []);
     } catch {
       setAdverts([]);

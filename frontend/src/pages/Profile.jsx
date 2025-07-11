@@ -43,7 +43,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user) {
-      axios.get('/orders/my').then(res => setOrders(res.data || []));
+      axios.get('/api/orders/my').then(res => setOrders(res.data || []));
     }
   }, [user]);
 
