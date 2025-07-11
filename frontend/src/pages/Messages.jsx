@@ -29,9 +29,9 @@ const Messages = () => {
 
   useEffect(() => {
     if (user?.role === 'admin') {
-      axios.get('/api/users').then(res => {
+      axios.get('/users').then(res => {
         setUsers(res.data.users);
-        axios.get(`/api/users/messages/all?ts=${Date.now()}`).then(msgRes => {
+        axios.get(`/users/messages/all?ts=${Date.now()}`).then(msgRes => {
           const adminId = user.id?.toString();
           const messages = msgRes.data.messages;
           const uniqueUserIds = Array.from(new Set(
@@ -49,7 +49,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (user && user.role !== 'admin') {
-      axios.get('/api/users/admin-user')
+      axios.get('/users/admin-user')
         .then(res => {
           if (res.data.admin && res.data.admin._id) {
             setAdminId(res.data.admin._id);
@@ -81,7 +81,7 @@ const Messages = () => {
       return;
     }
     setLoading(true);
-    axios.get(`/api/users/messages?with=${withUser}`)
+    axios.get(`/users/messages?with=${withUser}`)
       .then(res => setMessages(res.data.messages))
       .catch(() => setMessages([]))
       .finally(() => setLoading(false));

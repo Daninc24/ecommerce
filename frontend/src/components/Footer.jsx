@@ -35,7 +35,7 @@ const Footer = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post('/api/testimonials', {
+      await axios.post('/testimonials', {
         rating: userRating,
         message: userMessage,
         name: userName || 'Anonymous',

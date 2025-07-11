@@ -99,7 +99,7 @@ const POS = () => {
   useEffect(() => {
     if (user && user.role === 'admin') {
       setUsersLoading(true);
-      axios.get('/api/users')
+      axios.get('/users')
         .then(res => setAllUsers(res.data.users || []))
         .catch(() => setAllUsers([]))
         .finally(() => setUsersLoading(false));
@@ -108,7 +108,7 @@ const POS = () => {
 
   useEffect(() => {
     // Fetch products
-    axios.get('/api/products')
+    axios.get('/products')
       .then(res => setProducts(res.data.products || res.data || []))
       .catch(() => setProducts([]));
   }, []);
@@ -178,7 +178,7 @@ const POS = () => {
   const searchCustomers = async (q) => {
     setCustomerError('');
     try {
-      const res = await axios.get(`/api/customers/search?q=${encodeURIComponent(q)}`);
+      const res = await axios.get(`/customers/search?q=${encodeURIComponent(q)}`);
       setCustomerResults(res.data.customers || []);
     } catch {
       setCustomerResults([]);
@@ -193,7 +193,7 @@ const POS = () => {
       return;
     }
     try {
-      const res = await axios.post('/api/customers', newCustomer);
+      const res = await axios.post('/customers', newCustomer);
       setSelectedCustomer(res.data.customer);
       setCustomerModal(false);
       setNewCustomer({ name: '', phone: '', email: '' });
@@ -207,7 +207,7 @@ const POS = () => {
     setCouponError('');
     if (!couponCode) return;
     try {
-      const res = await axios.post('/api/coupons/validate', { code: couponCode });
+      const res = await axios.post('/coupons/validate', { code: couponCode });
       setAppliedCoupon(res.data.coupon);
       setCouponError('');
     } catch (err) {
@@ -235,7 +235,7 @@ const POS = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('/api/pos/sales', {
+      const res = await axios.post('/pos/sales', {
         items: cartWithDiscounts.map(item => ({
           product: item.product,
           quantity: item.quantity,
@@ -303,7 +303,7 @@ const POS = () => {
     setReturnItems([]);
     if (!returnSaleId) return;
     try {
-      const res = await axios.get(`/api/pos/sales/${returnSaleId}`);
+      const res = await axios.get(`/pos/sales/${returnSaleId}`);
       setReturnSale(res.data.sale);
       setReturnItems(res.data.sale.items.map(item => ({ ...item, returnQty: 0 })));
     } catch (err) {
@@ -327,7 +327,7 @@ const POS = () => {
       return;
     }
     try {
-      const res = await axios.post('/api/pos/sales/return', {
+      const res = await axios.post('/pos/sales/return', {
         saleId: returnSale._id,
         items: itemsToReturn,
         reason: 'Customer return',
@@ -347,7 +347,7 @@ const POS = () => {
     setZReportError('');
     try {
       const today = new Date().toISOString().slice(0, 10);
-      const res = await axios.get('/api/pos/z-report', { params: { date: today } });
+      const res = await axios.get('/pos/z-report', { params: { date: today } });
       setZReport(res.data);
     } catch (err) {
       setZReportError('Failed to fetch Z-report');
@@ -359,10 +359,10 @@ const POS = () => {
   const handleUserRoleChange = async (userId, newRole) => {
     setRoleMsg('');
     try {
-      await axios.put(`/api/users/${userId}/role`, { role: newRole });
+      await axios.put(`/users/${userId}/role`, { role: newRole });
       setRoleMsg('Role updated successfully!');
       // Refresh users
-      const res = await axios.get('/api/users');
+      const res = await axios.get('/users');
       setAllUsers(res.data.users || []);
     } catch (err) {
       setRoleMsg('Failed to update role: ' + (err.response?.data?.message || err.message));
@@ -377,10 +377,10 @@ const POS = () => {
       return;
     }
     try {
-      await axios.put(`/api/users/${userId}/salary`, { salary: Number(salary) });
+      await axios.put(`/users/${userId}/salary`, { salary: Number(salary) });
       setRoleMsg('Salary updated successfully!');
       // Refresh users
-      const res = await axios.get('/api/users');
+      const res = await axios.get('/users');
       setAllUsers(res.data.users || []);
     } catch (err) {
       setRoleMsg('Failed to update salary: ' + (err.response?.data?.message || err.message));
@@ -418,7 +418,7 @@ const POS = () => {
       submitData.append('category', addProductForm.category);
       submitData.append('stock', addProductForm.stock);
       addProductImages.forEach(file => submitData.append('images', file));
-      await axios.post('/api/products', submitData, {
+      await axios.post('/products', submitData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setShowAddProduct(false);
@@ -427,7 +427,7 @@ const POS = () => {
       setAddProductPreviews([]);
       setAddProductError('');
       // Refresh products
-      axios.get('/api/products')
+      axios.get('/products')
         .then(res => setProducts(res.data.products || res.data || []));
     } catch (error) {
       setAddProductError(error.response?.data?.message || error.message || 'Failed to add product');

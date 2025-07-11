@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 
 const AdminProducts = () => {
-  const { isManagerOrAdmin } = useAuth();
+  const { isManagerOrAdmin, user } = useAuth();
   const { error } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/products');
+      const response = await axios.get('/products');
       setProducts(response.data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -115,13 +115,13 @@ const AdminProducts = () => {
       });
 
       if (editingProduct) {
-        await axios.put(`/api/products/${editingProduct._id}`, submitData, {
+        await axios.put(`/products/${editingProduct._id}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
       } else {
-        await axios.post('/api/products', submitData, {
+        await axios.post('/products', submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -152,7 +152,7 @@ const AdminProducts = () => {
   const handleDelete = async (productId) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
-        await axios.delete(`/api/products/${productId}`);
+        await axios.delete(`/products/${productId}`);
         fetchProducts();
       } catch (error) {
         console.error('Error deleting product:', error);
@@ -185,8 +185,25 @@ const AdminProducts = () => {
 
   return (
     <div className="space-y-6">
+      {/* Debug info - remove this after fixing */}
+      <div className="bg-yellow-100 p-4 rounded-lg">
+        <p><strong>Debug Info:</strong></p>
+        <p>User: {user?.name || 'Not logged in'}</p>
+        <p>Role: {user?.role || 'No role'}</p>
+        <p>isManagerOrAdmin: {isManagerOrAdmin ? 'true' : 'false'}</p>
+      </div>
+      
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Manage Products</h1>
+        
+        {/* Test button - always visible */}
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+        >
+          TEST BUTTON (Always Visible)
+        </button>
+        
         {isManagerOrAdmin && (
           <button
             onClick={() => setShowForm(true)}

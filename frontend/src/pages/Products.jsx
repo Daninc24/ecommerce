@@ -81,7 +81,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/products');
+      const response = await axios.get('/products');
       setProducts(response.data || []);
     } catch (error) {
       showToast('Error fetching products', 'error');

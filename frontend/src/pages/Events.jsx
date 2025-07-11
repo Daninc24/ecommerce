@@ -13,7 +13,7 @@ const Events = () => {
   const fetchAndSetEvents = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/events');
+      const res = await axios.get('/events');
       const now = new Date();
       setUpcoming(res.data.filter(e => new Date(e.date) >= now));
       setPast(res.data.filter(e => new Date(e.date) < now));
