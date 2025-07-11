@@ -89,8 +89,8 @@ const createProduct = async (req, res) => {
         ? 'https://ecommerce-do0x.onrender.com'
         : `${req.protocol}://${req.get('host')}`;
       
-      const imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
-      console.log('Generated URL:', url);
+      imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
+      console.log('Generated URLs:', imageUrls);
     }
     console.log('Final image URLs:', imageUrls);
 
@@ -137,7 +137,10 @@ const updateProduct = async (req, res) => {
     // Handle image uploads
     let imageUrls = [];
     if (req.files && req.files.length > 0) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      // Generate image URLs with HTTPS in production
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
       imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
     }
 

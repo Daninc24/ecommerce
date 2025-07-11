@@ -171,22 +171,73 @@ app.get('/uploads/:filename', (req, res) => {
     'https://ecommerceweb-git-main-daniel-mailus-projects.vercel.app'
   ];
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
+  
+  // Set CORS headers for all origins that match our allowed list
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
   }
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Credentials', 'true');
   
   // Force HTTPS in production
   if (process.env.NODE_ENV === 'production') {
     res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   }
   
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   res.sendFile(filePath, (err) => {
     if (err) {
       console.error('Error serving file:', err);
       res.status(404).json({ error: 'File not found' });
+    }
+  });
+});
+
+// Serve profile images with CORS
+app.get('/uploads/profiles/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, '../uploads/profiles', filename);
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'http://localhost:5174',
+    'https://myshoppingcenters-8knn.vercel.app',
+    'https://myshoppingcenters.vercel.app',
+    'https://myshoppingcenter.vercel.app',
+    'https://ecommerceweb-gilt.vercel.app',
+    'https://ecommerceweb.vercel.app',
+    'https://ecommerceweb-git-main-daniel-mailus-projects.vercel.app'
+  ];
+  const origin = req.headers.origin;
+  
+  // Set CORS headers for all origins that match our allowed list
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Type');
+  }
+  
+  // Force HTTPS in production
+  if (process.env.NODE_ENV === 'production') {
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  
+  // Handle OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('Error serving profile file:', err);
+      res.status(404).json({ error: 'Profile file not found' });
     }
   });
 });
