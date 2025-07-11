@@ -21,7 +21,7 @@ const AdminEvents = () => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/events');
+      const res = await axios.get('/events');
       setEvents(res.data || []);
     } catch {
       setEvents([]);

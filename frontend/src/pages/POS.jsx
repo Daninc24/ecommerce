@@ -14,7 +14,7 @@ const paymentMethods = [
 ];
 
 const POS = () => {
-  const { user, loading: authLoading, isWarehouseManager } = useAuth();
+  const { user, loading: authLoading, isWarehouseManager, isAdmin } = useAuth();
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [cart, setCart] = useState([]);
@@ -953,7 +953,7 @@ const POS = () => {
         </div>
       )}
       {/* Add Product Button for Warehouse Manager */}
-      {isWarehouseManager && (
+      {(isWarehouseManager || isAdmin) && (
         <div className="mb-4 flex justify-end">
           <button
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
@@ -965,7 +965,7 @@ const POS = () => {
         </div>
       )}
       {/* Add Product Modal for Warehouse Manager */}
-      {isWarehouseManager && showAddProduct && (
+      {(isWarehouseManager || isAdmin) && showAddProduct && (
         <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
           <div className="flex justify-between items-center mb-2">
             <span className="font-bold text-blue-900">Add New Product (Warehouse Manager)</span>

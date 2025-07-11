@@ -142,7 +142,7 @@ const Home = () => {
     fetchBestSelling();
     fetchEvents();
     fetchAdverts();
-    axios.get('/api/testimonials')
+    axios.get('/testimonials')
       .then(res => setTestimonials(res.data.testimonials || []))
       .catch(() => setTestimonials([]));
     // Simulate fetching testimonials
