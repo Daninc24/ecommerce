@@ -84,12 +84,13 @@ const createProduct = async (req, res) => {
     let imageUrls = [];
     if (req.files && req.files.length > 0) {
       console.log('Processing uploaded files...');
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      imageUrls = req.files.map(file => {
-        const url = `${baseUrl}/uploads/${file.filename}`;
-        console.log('Generated URL:', url);
-        return url;
-      });
+      // Generate image URLs
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
+      
+      const imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
+      console.log('Generated URL:', url);
     }
     console.log('Final image URLs:', imageUrls);
 

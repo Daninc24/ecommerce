@@ -133,7 +133,11 @@ exports.uploadProfileImage = [
       if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
       const user = await User.findById(req.user._id);
       if (!user) return res.status(404).json({ message: 'User not found' });
-      user.profileImage = `/uploads/profiles/${req.file.filename}`;
+      // Generate profile image URL
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
+      user.profileImage = `${baseUrl}/uploads/profiles/${req.file.filename}`;
       await user.save();
       res.json({ profileImage: user.profileImage });
     } catch (error) {

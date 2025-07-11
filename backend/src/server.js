@@ -177,6 +177,12 @@ app.get('/uploads/:filename', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Force HTTPS in production
+  if (process.env.NODE_ENV === 'production') {
+    res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  
   res.sendFile(filePath, (err) => {
     if (err) {
       console.error('Error serving file:', err);
@@ -201,7 +207,10 @@ app.get('/health', (req, res) => {
 app.post('/test-upload', uploadMultiple.array('images', 5), (req, res) => {
   try {
     if (req.files && req.files.length > 0) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      // Generate image URLs with HTTPS in production
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
       const imageUrls = req.files.map(file => `${baseUrl}/uploads/${file.filename}`);
       res.json({
         message: 'Upload test successful',

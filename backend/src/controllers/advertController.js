@@ -7,7 +7,11 @@ exports.createAdvert = async (req, res) => {
     const { title, message, product, startDate, endDate, active, template } = req.body;
     let image = req.body.image;
     if (req.file) {
-      image = `/uploads/${req.file.filename}`;
+      // Generate image URL
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
+      image = `${baseUrl}/uploads/${req.file.filename}`;
     }
     const advert = await Advert.create({ title, message, product, image, startDate, endDate, active, template });
     res.status(201).json({ advert });
@@ -23,7 +27,11 @@ exports.updateAdvert = async (req, res) => {
     const { title, message, product, startDate, endDate, active, template } = req.body;
     let image = req.body.image;
     if (req.file) {
-      image = `/uploads/${req.file.filename}`;
+      // Generate image URL
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
+      image = `${baseUrl}/uploads/${req.file.filename}`;
     }
     const advert = await Advert.findByIdAndUpdate(id, { title, message, product, image, startDate, endDate, active, template }, { new: true });
     if (!advert) return res.status(404).json({ message: 'Advert not found' });

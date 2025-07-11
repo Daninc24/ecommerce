@@ -35,7 +35,10 @@ exports.createEvent = async (req, res) => {
   try {
     let imageUrl = '';
     if (req.file) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      // Generate image URL
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
       imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
     }
     const event = new Event({
@@ -55,7 +58,10 @@ exports.updateEvent = async (req, res) => {
   try {
     let imageUrl = '';
     if (req.file) {
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      // Generate image URL
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerce-do0x.onrender.com'
+        : `${req.protocol}://${req.get('host')}`;
       imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
     }
     const updateData = {
