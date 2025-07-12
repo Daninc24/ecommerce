@@ -14,19 +14,8 @@ const Login = () => {
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
 
-  // Clear auth state when login page loads
-  useEffect(() => {
-    // Clear all cookies
-    document.cookie.split(";").forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
-    
-    // Clear localStorage
-    localStorage.clear();
-    sessionStorage.clear();
-  }, []);
+  // No need to clear auth state on login page load
+  // This was causing authentication issues
 
   const handleChange = (e) => {
     setFormData({

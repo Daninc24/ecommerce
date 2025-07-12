@@ -28,11 +28,15 @@ export const AuthProvider = ({ children }) => {
       (error) => {
         if (error.response?.status === 401) {
           setUser(null);
-          // Clear cookies
+          // Only clear auth-related cookies, not all cookies
+          const authCookies = ['token', 'auth', 'session'];
           document.cookie.split(";").forEach((c) => {
-            document.cookie = c
-              .replace(/^ +/, "")
-              .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            const cookieName = c.split("=")[0].trim();
+            if (authCookies.some(auth => cookieName.includes(auth))) {
+              document.cookie = c
+                .replace(/^ +/, "")
+                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            }
           });
         }
         return Promise.reject(error);
@@ -109,6 +113,12 @@ export const AuthProvider = ({ children }) => {
     window.location.href = apiBase + '/api/auth/google';
   };
 
+  const loginWithFacebook = () => {
+    let apiBase = import.meta.env.VITE_API_URL || 'https://ecommerce-do0x.onrender.com';
+    apiBase = apiBase.replace(/\/+$/, '').replace(/\/api$/, '');
+    window.location.href = apiBase + '/api/auth/facebook';
+  };
+
   const value = {
     user,
     loading,
@@ -122,7 +132,8 @@ export const AuthProvider = ({ children }) => {
     isWarehouseManager: user?.role === 'warehouse_manager',
     isManagerOrAdmin: user?.role === 'admin' || user?.role === 'manager' || user?.role === 'warehouse_manager' || user?.role === 'store_manager',
     isShopkeeperOrAdmin: user?.role === 'shopkeeper' || user?.role === 'admin',
-    loginWithGoogle
+    loginWithGoogle,
+    loginWithFacebook
   };
 
   return (
