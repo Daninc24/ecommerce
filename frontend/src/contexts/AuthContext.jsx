@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          console.log('401 error detected, clearing user state');
           setUser(null);
           // Clear cookies
           document.cookie.split(";").forEach((c) => {
@@ -55,7 +54,6 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get('/auth/profile');
       setUser(response.data.user);
     } catch (error) {
-      console.log('Auth check failed:', error.message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -68,7 +66,6 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data.user);
       return { success: true };
     } catch (error) {
-      console.log('Login error:', error.response?.data?.message || error.message);
       return { 
         success: false, 
         error: error.response?.data?.message || 'Login failed' 
@@ -93,7 +90,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post('/auth/logout');
     } catch (error) {
-      console.log('Logout error:', error.message);
+      // Silent error handling
     } finally {
       setUser(null);
       // Clear cookies

@@ -185,24 +185,8 @@ const AdminProducts = () => {
 
   return (
     <div className="space-y-6">
-      {/* Debug info - remove this after fixing */}
-      <div className="bg-yellow-100 p-4 rounded-lg">
-        <p><strong>Debug Info:</strong></p>
-        <p>User: {user?.name || 'Not logged in'}</p>
-        <p>Role: {user?.role || 'No role'}</p>
-        <p>isManagerOrAdmin: {isManagerOrAdmin ? 'true' : 'false'}</p>
-      </div>
-      
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Manage Products</h1>
-        
-        {/* Test button - always visible */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-red-500 text-white px-4 py-2 rounded mr-2"
-        >
-          TEST BUTTON (Always Visible)
-        </button>
         
         {isManagerOrAdmin && (
           <button

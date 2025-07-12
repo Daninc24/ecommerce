@@ -38,7 +38,6 @@ export const setupAuthErrorHandler = () => {
     (response) => response,
     (error) => {
       if (error.response?.status === 401) {
-        console.log('Authentication error detected, redirecting to login...');
         forceLogout();
       }
       return Promise.reject(error);

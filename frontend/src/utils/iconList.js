@@ -1,5 +1,4 @@
 // List of all Heroicons we're using in the application
-// This helps with debugging and ensures all icons are available
 
 export const ICONS = {
   // Navigation & UI

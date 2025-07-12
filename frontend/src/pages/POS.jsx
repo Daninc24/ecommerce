@@ -556,14 +556,6 @@ const POS = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-2 sm:p-4 md:p-6 bg-white rounded shadow mt-4 sm:mt-8">
-      
-      {/* <div className="mb-4 p-2 bg-yellow-100 text-yellow-800 rounded text-xs">
-        <strong>Debug:</strong> User: {user ? user.name : 'None'} | Role: {user ? user.role : 'None'}
-      </div>
-      <div className="mb-2 p-2 bg-blue-100 text-blue-800 rounded text-xs">
-        <strong>Possible Roles:</strong> user, admin, shopkeeper, delivery, moderator, employee, store_manager, warehouse_manager, manager<br />
-        <strong>Current Role:</strong> {user ? user.role : 'None'}
-      </div> */}
       {/* Returns/Refunds Modal */}
       {returnModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-2 sm:p-0">

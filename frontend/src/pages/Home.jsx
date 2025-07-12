@@ -145,24 +145,6 @@ const Home = () => {
     axios.get('/testimonials')
       .then(res => setTestimonials(res.data.testimonials || []))
       .catch(() => setTestimonials([]));
-    // Simulate fetching testimonials
-    // setTestimonials([
-    //   {
-    //     name: 'Sarah Johnson',
-    //     rating: 5,
-    //     comment: 'Amazing quality products and fast delivery. Highly recommended!'
-    //   },
-    //   {
-    //     name: 'Mike Chen',
-    //     rating: 5,
-    //     comment: 'Great customer service and competitive prices. Will shop again!'
-    //   },
-    //   {
-    //     name: 'Emily Davis',
-    //     rating: 5,
-    //     comment: 'Love the variety of products and easy checkout process.'
-    //   }
-    // ]);
     // Real-time events
     if (!socketRef.current) {
       socketRef.current = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://ecommerce-do0x.onrender.com', { 

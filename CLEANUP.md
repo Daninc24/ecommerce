@@ -6,10 +6,13 @@ This document outlines the cleanup process performed on the ecommerce project an
 
 ### 1. Removed Redundant Files
 - **Deleted**: `backend/src/routes/productRoutes.js` (redundant with `products.js`)
+- **Deleted**: `frontend/src/components/AuthFix.jsx` (development tool)
+- **Deleted**: `nginx-1.29.0/` directory (unused nginx installation)
 
 ### 2. Removed Dangerous Cleanup Routes
 - **Removed**: `/api/cleanup-products` route that could delete products
 - **Removed**: `/api/emergency-cleanup` route that could delete products
+- **Removed**: Test routes (`/test-upload`, `/api/test-products`, `/api/test-images`, `/api/list-images`)
 - **Kept**: Safe image cleanup script that only removes unused files
 
 ### 3. Removed Debug Console.log Statements
@@ -22,15 +25,21 @@ This document outlines the cleanup process performed on the ecommerce project an
   - `server.js` - emergency cleanup function
   - `routes/products.js` - debug middleware
   - `routes/users.js` - route handlers
+  - Modified `logger.js` to only log in development mode
 
 - **Frontend**: Removed console.log from:
   - `Home.jsx` - error handling in fetch functions
+  - `AuthContext.jsx` - authentication error handling
+  - `authHelper.js` - authentication error handling
 
 ### 3. Optimized Code Structure
 - Simplified route handlers
 - Removed unnecessary middleware
 - Cleaned up error handling
 - Streamlined authentication flow
+- Removed debug information from POS.jsx and AdminProducts.jsx
+- Removed commented code from Home.jsx
+- Removed unused comments from iconList.js
 
 ## Image Cleanup
 
